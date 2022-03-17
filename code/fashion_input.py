@@ -59,4 +59,29 @@ def load_data_numpy(df):
     adjusted_std = 1.0/np.sqrt(IMG_ROWS * IMG_COLS * 3)
 
     for i in range(num_images):
-        img = get_image(image)
+        img = get_image(image_path_array[i], x1=x1[i, 0], y1=y1[i, 0], x2=x2[i, 0], y2=y2[i, 0])
+        flip_indicator = np.random.randint(low=0, high=2)
+        if flip_indicator == 0:
+            img[0, ...] = cv2.flip(img[0, ...], 1)
+
+        image_array = np.concatenate((image_array,img)) 
+
+    image_array = (image_array - imageNet_mean_pixel)/ global_std
+
+    # Convert to BGR image for pre-train vgg16
+    assert image_array.shape[1:] == (IMG_ROWS, IMG_COLS, 3)
+    # image_array = image_array.transpose((0, 3, 1, 2))
+
+    return image_array, label_array, bbox_array   
+
+def prepare_df(path, usecols, shuffle=shuffle):
+    '''
+    :param path: the path of a csv file
+    :param usecols: which columns to read
+    :return: a pandas dataframe
+    '''
+    df = pd.read_csv(path, usecols=usecols)
+    if shuffle is True:
+        order = np.random.permutation(len(df))
+        df = df.iloc[order, :]
+    return df
