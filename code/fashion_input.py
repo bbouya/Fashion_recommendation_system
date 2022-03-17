@@ -39,3 +39,9 @@ def get_image(path, x1, y1, x2,y2):
     img = img.reshape(1, IMG_ROWS,IMG_COLS,3)
 
     return img
+
+def load_data_numpy(df):
+    '''
+    :param df: a pandas dataframe with the image paths and localization coordiante
+    : return : the numpy re 
+    '''
