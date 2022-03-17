@@ -2,6 +2,7 @@
 This python file is responsible for the image processing.
 '''
 
+from cProfile import label
 from operator import ilshift, ipow
 from sre_constants import ASSERT
 from sre_parse import FLAGS
@@ -43,5 +44,19 @@ def get_image(path, x1, y1, x2,y2):
 def load_data_numpy(df):
     '''
     :param df: a pandas dataframe with the image paths and localization coordiante
-    : return : the numpy re 
+    : return : the numpy representation of the image
     '''
+
+    num_images = len(df)
+    image_path_array = df['image_path'].as_matrix()
+    label_array = df['category'].as_matrix()
+    x1 = df['x1_modified'].as_matrix().reshape(-1, 1)
+    y1 = df['y1_modified'].as_matrix().reshape(-1, 1)
+    x2 = df['x2_modified'].as_matrix().reshape(-1, 1)
+    y2 = df['y2_modified'].as_matrix().reshape(-1, 1)
+
+    bbox_array = np.array([]).reshape(-1,IMG_ROWS,IMG_COLS,3)
+    adjusted_std = 1.0/np.sqrt(IMG_ROWS * IMG_COLS * 3)
+
+    for i in range(num_images):
+        img = get_image(image)
